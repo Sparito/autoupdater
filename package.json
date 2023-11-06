@@ -1,0 +1,24 @@
+{
+  "name": "electron-test-app",
+  "version": "1.0.0",
+  "description": "electron test app",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "author": "Cayre",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^27.0.3",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.4"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Sparito/autoupdater.git"
+  }
+}
