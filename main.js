@@ -38,15 +38,15 @@ app.whenReady().then(() => {
   })
 })
 
-mainWindow.once('ready-to-show', () => {
+app.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify();
 });
   
 autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('update_available');
+    app.webContents.send('update_available');
 });
 autoUpdater.on('update-downloaded', () => {
-    mainWindow.webContents.send('update_downloaded');
+    app.webContents.send('update_downloaded');
 });
 
 ipcMain.on('restart_app', () => {
