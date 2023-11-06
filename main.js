@@ -43,6 +43,7 @@ app.once('ready-to-show', () => {
 });
   
 autoUpdater.on('update-available', () => {
+    console.log("Mise à jour dispo")
     app.webContents.send('update_available');
 });
 autoUpdater.on('update-downloaded', () => {
