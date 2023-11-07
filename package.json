@@ -1,6 +1,6 @@
 {
   "name": "electron-test-app",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "electron test app",
   "main": "main.js",
   "scripts": {
@@ -21,6 +21,6 @@
   },
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/Sparito/autoupdater.git"
+    "url" : "https://github.com/Sparito/autoupdater"
   }
 }

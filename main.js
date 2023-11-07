@@ -1,28 +1,52 @@
 // main.js
 
 // Modules pour la gestion de l'appli et la création de la BrowserWindow native browser window
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, ipcRenderer } = require('electron')
 const path = require('node:path')
 const { autoUpdater } = require("electron-updater")
+const fs = require('fs')
+
+let mainWindow
 
 const createWindow = () => {
-  // Création de la browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-        nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: false,
-      enableRemoteModule: true,
-    }
-  })
+	// Création de la browser window.
+	mainWindow = new BrowserWindow({
+		width: 800,
+		height: 600,
+		webPreferences: {
+			nodeIntegration: true,
+		preload: path.join(__dirname, 'preload.js'),
+		contextIsolation: false,
+		enableRemoteModule: true,
+		}
+	})
 
-  // et chargement de l'index.html de l'application.
-  mainWindow.loadFile('index.html')
+	// et chargement de l'index.html de l'application.
+	mainWindow.loadFile('index.html')
 
-  // Ouvrir les outils de développement.
-  // mainWindow.webContents.openDevTools()
+	autoUpdater.on('error', (error) => {
+		fs.appendFileSync('C:\\Users\\mcayr\\Documents\\Aiway\\electron-test-app\\log.txt', "an error occured: "+error.message+"\n");
+	})
+	autoUpdater.on('checking-for-update', (event) => {
+		mainWindow.webContents.send('check-update')
+		//fs.appendFileSync('C:\\Users\\mcayr\\Documents\\Aiway\\electron-test-app\\log.txt', "checking-for-update...\n");
+	});
+	autoUpdater.on('update-not-available', (event) => {
+		mainWindow.webContents.send('update-not-available')
+		//fs.appendFileSync('C:\\Users\\mcayr\\Documents\\Aiway\\electron-test-app\\log.txt', "Software up to date\n")
+	});
+	autoUpdater.on('update-available', (event) => {
+		mainWindow.webContents.send('update-available')
+	});
+	autoUpdater.on('update-downloaded', (event) => {
+		mainWindow.webContents.send('update-downloaded')
+		//fs.appendFileSync('C:\\Users\\mcayr\\Documents\\Aiway\\electron-test-app\\log.txt', "Mise à jour téléchargée\n")
+		autoUpdater.quitAndInstall()
+	});
+
+
+	// Ouvrir les outils de développement.
+	// mainWindow.webContents.openDevTools()
 }
 
 // Cette méthode sera appelée quand Electron aura fini
@@ -30,6 +54,7 @@ const createWindow = () => {
 // Certaines APIs peuvent être utilisées uniquement quant cet événement est émit.
 app.whenReady().then(() => {
   createWindow()
+  autoUpdater.checkForUpdatesAndNotify();
 
   app.on('activate', () => {
     // Sur macOS il est commun de re-créer une fenêtre  lors 
@@ -38,21 +63,8 @@ app.whenReady().then(() => {
   })
 })
 
-app.once('ready-to-show', () => {
-    autoUpdater.checkForUpdatesAndNotify();
-});
-  
-autoUpdater.on('update-available', () => {
-    console.log("Mise à jour dispo")
-    app.webContents.send('update_available');
-});
-autoUpdater.on('update-downloaded', () => {
-    app.webContents.send('update_downloaded');
-});
 
-ipcMain.on('restart_app', () => {
-    autoUpdater.quitAndInstall();
-});
+
 
 // Quitter quand toutes les fenêtres sont fermées, sauf sur macOS. Dans ce cas il est courant
 // que les applications et barre de menu restents actives jusqu'à ce que l'utilisateur quitte 
